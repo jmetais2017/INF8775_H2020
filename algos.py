@@ -59,6 +59,19 @@ def strassenProduct(A, B, N, seuil):
         return(np.concatenate((L1, L2), axis=0))
 
 
+def runStandardProduct(A, B, N):
+    start = time.time()
+    M = standardProduct(A, B, N)
+    end = time.time()
+    return(M, end-start)
+
+
+def runStrassenProduct(A, B, N, seuil):
+    start = time.time()
+    M = strassenProduct(A, B, N, seuil)
+    end = time.time()
+    return(M, end-start)
+
 
 def printMatrix(A, N):
     size = 2**N
@@ -69,16 +82,17 @@ def printMatrix(A, N):
 
 
 
-
-A = loadMatrix("./mat/A.txt")
-B = loadMatrix("./mat/B.txt")
-
-
-N = 2
+N = 8
 seuil = 1
 
-M = standardProduct(A, B, N)
-print(M)
+A = loadMatrix("./mat/ex_" + str(N) + "_3")
+B = loadMatrix("./mat/ex_" + str(N) + "_2")
 
-P = strassenProduct(A, B, N, seuil)
+
+M, duration = runStandardProduct(A, B, N)
+print(M)
+print(duration)
+
+P, duration = runStrassenProduct(A, B, N, seuil)
 print(P)
+print(duration)
