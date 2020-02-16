@@ -1,5 +1,10 @@
+#!/usr/bin/python
+# -*- coding: latin-1 -*-
+
 import numpy as np
 import time
+import sys
+import math
 
 #Ce fichier contient les implémentations des algorithmes étudiés
 
@@ -24,7 +29,7 @@ def standardProduct(A, B, N):
             coeff = 0
             for k in range(size):
                 coeff += A[i][k]*B[k][j]
-            result[i][j] = coeff
+            result[i][j] = int(coeff)
 
     return result
 
@@ -89,27 +94,16 @@ def runStrassenProduct(A, B, N, seuil):
     return(M, end-start)
 
 
-####TESTS####
 
-# def printMatrix(A, N):
-#     size = 2**N
-#     for i in range(size):
-#         for j in range(size):
-#             print(int(A[i][j]), " ")
-#         print("\t")
-
-
-# N = 8
-# seuil = 1
-#
-# A = loadMatrix("./mat/ex_" + str(N) + "_3")
-# B = loadMatrix("./mat/ex_" + str(N) + "_2")
-#
-#
-# M, duration = runStandardProduct(A, B, N)
-# print(M)
-# print(duration)
-#
-# P, duration = runStrassenProduct(A, B, N, seuil)
-# print(P)
-# print(duration)
+def printMatrix(A, N):
+    size = 2**N
+    for i in range(size):
+        row = str(A[i])
+        row = row[1:(len(row)-1)]
+        words = row.split(" ")
+        display = ""
+        for j in range(len(words)):
+            word = words[j][0:len(words[j]) - 1]
+            display += word + " "
+        print(display)
+        
