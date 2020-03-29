@@ -40,14 +40,14 @@ def tracer_rapport(Nlist, T, algo):
         pl.plot([N for N in Nlist], [T[i] / doigts * Nlist[i]
                                      for i in range(len(Nlist))])
         pl.xlabel("Taille matrice")
-        pl.ylabel("Temps/Taille au cube")
+        pl.ylabel("Temps/Taille glouton")
 
     if(algo == "dynamique"):
         # Hypothèse sur la complexité de l'algorithme glouton :
         pl.plot([N for N in Nlist], [T[i] / doigts**2 * Nlist[i]
                                      for i in range(len(Nlist))])
         pl.xlabel("Taille matrice")
-        pl.ylabel("Temps/Taille au cube")
+        pl.ylabel("Temps/Taille progDyn")
 
     else:
         maxIteration = 100
@@ -55,7 +55,7 @@ def tracer_rapport(Nlist, T, algo):
         pl.plot([N for N in Nlist], [T[i] / maxIteration * np.log2(Nlist[i])
                                      for i in range(len(Nlist))])
         pl.xlabel("Taille matrice")
-        pl.ylabel("Temps/Taille puissance 2.81")
+        pl.ylabel("Temps/Taille recherche locale")
 
     pl.title("Rapport" + " (" + algo + ")")
     pl.show()
@@ -97,6 +97,10 @@ ClocalSearch = [14670.4, 44792.6, 149356.2, 447747.3, 1489251.2,
 tracer_rapport(exSizes, Tglouton, "glouton")
 tracer_rapport(exSizes, TprogDyn, "programmation dynamique")
 tracer_rapport(exSizes, TlocalSearch, "recherche locale")
+
+# tracer_rapport(exSizes, Cglouton, "glouton")
+# tracer_rapport(exSizes, CprogDyn, "programmation dynamique")
+# tracer_rapport(exSizes, ClocalSearch, "recherche locale")
 
 # Affichage des graphes
 # tracer_constantes(exSizes, Tglouton, "glouton")
