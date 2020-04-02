@@ -4,14 +4,16 @@ import sys
 import time
 import matplotlib.pyplot as pl
 import numpy as np
+from scipy import stats
 
 # from algos import loadMatrix
 # from algos import runStandardProduct
 # from algos import runStrassenProduct
 
-
 # Ce fichier permet d'obtenir les graphes d'analyse hybride sur les différentes implémentations
 # Tracé de la courbe de puissance
+
+
 def tracer_puissance(Nlist, T, algo):
     logSizes = np.log2(Nlist)
     logTimes = np.log2(T)
@@ -63,15 +65,55 @@ def tracer_rapport(Nlist, T, algo):
 
 # Tracé de la courbe de constante
 def tracer_constantes(Nlist, T, algo):
-    pl.plot(Nlist, T, label="mesures")
-    pl.xlabel("Longueur de la mélodie")
-    fit = np.polyfit(Nlist, T, 1)
-    pl.plot(Nlist, [fit[0] * N + fit[1] for N in Nlist], label="régression")
+    doigts = 5
+    if algo == "glouton":
+        # Hypothèse sur la complexité de l'algorithme glouton :
+        pl.plot([doigts * N for N in Nlist], [T[i]
+                                              for i in range(len(Nlist))], label="test constante")
+        pl.xlabel("Longueur de la mélodie Th.")
+        pl.ylabel("Longueur de la mélodie Exp.")
+
+        fit = np.polyfit([doigts * N for N in Nlist], T, 1)
+        pl.plot([doigts * N for N in Nlist], [fit[0] * (doigts * N) + fit[1]
+                                              for N in Nlist], label="régression")
+        slope, intercept, r_value, p_value, std_err = stats.linregress([doigts * N for N in Nlist], [T[i]
+                                                                                                     for i in range(len(Nlist))])
+
+        pl.text(doigts * Nlist[0], int((T[len(T) - 1] - T[0]) / 2), "Régression linéaire : \ny = " + str(
+            int(10000000 * fit[0]) / 10000000) + "x + " + str(int(1000 * fit[1]) / 1000) + "\nR^2 = " + str(round(r_value, 3)))
+
+    if algo == "programmation dynamique":
+        # Hypothèse sur la complexité de l'algorithme prog. Dyn. :
+        pl.plot([doigts**2 * N for N in Nlist], [T[i]
+                                                 for i in range(len(Nlist))], label="test constante")
+        pl.xlabel("Longueur de la mélodie Th.")
+        pl.ylabel("Longueur de la mélodie Exp.")
+
+        fit = np.polyfit([doigts**2 * N for N in Nlist], T, 1)
+        pl.plot([doigts**2 * N for N in Nlist], [fit[0] * (doigts**2 * N) + fit[1]
+                                                 for N in Nlist], label="régression")
+        slope, intercept, r_value, p_value, std_err = stats.linregress([doigts**2 * N for N in Nlist], [T[i]
+                                                                                                        for i in range(len(Nlist))])
+        pl.text(doigts**2 * Nlist[0], int((T[len(T) - 1] - T[0]) / 2), "Régression linéaire : \ny = " + str(
+            int(10000000 * fit[0]) / 10000000) + "x + " + str(int(1000 * fit[1]) / 1000) + "\nR^2 = " + str(round(r_value, 3)))
+
+    if algo == "recherche locale":
+        # Hypothèse sur la complexité de l'algorithme prog. Dyn. :
+        pl.plot([np.log2(N) * N for N in Nlist], [T[i]
+                                                  for i in range(len(Nlist))], label="test constante")
+        pl.xlabel("Longueur de la mélodie Th.")
+        pl.ylabel("Longueur de la mélodie Exp.")
+
+        fit = np.polyfit([np.log2(N) * N for N in Nlist], T, 1)
+        pl.plot([np.log2(N) * N for N in Nlist], [fit[0] * (np.log2(N) * N) + fit[1]
+                                                  for N in Nlist], label="régression")
+        slope, intercept, r_value, p_value, std_err = stats.linregress([np.log2(N) * N for N in Nlist], [T[i]
+                                                                                                         for i in range(len(Nlist))])
+        pl.text(np.log2(Nlist[0]) * Nlist[0], int((T[len(T) - 1] - T[0]) / 2), "Régression linéaire : \ny = " + str(
+            int(10000000 * fit[0]) / 10000000) + "x + " + str(int(1000 * fit[1]) / 1000) + "\nR^2 = " + str(round(r_value, 3)))
 
     pl.legend()
-    # pl.text(2**(3*Nlist[0]), T[len(T) - 2], "Régression linéaire : \ny = " + str(int(10000000*fit[0]) / 10000000) + "x + " + str(int(1000*fit[1]) / 1000))
 
-    pl.ylabel("Temps de calcul en s")
     pl.title("Constantes" + " (" + algo + ")")
     pl.show()
 
@@ -94,15 +136,11 @@ ClocalSearch = [14670.4, 44792.6, 149356.2, 447747.3, 1489251.2,
                 4471183.2, 14912654.3, 44695800.7, 89378573.4, 119166671.3]
 
 # Affichage des graphes
-tracer_rapport(exSizes, Tglouton, "glouton")
-tracer_rapport(exSizes, TprogDyn, "programmation dynamique")
-tracer_rapport(exSizes, TlocalSearch, "recherche locale")
-
 # tracer_rapport(exSizes, Cglouton, "glouton")
 # tracer_rapport(exSizes, CprogDyn, "programmation dynamique")
 # tracer_rapport(exSizes, ClocalSearch, "recherche locale")
 
 # Affichage des graphes
-# tracer_constantes(exSizes, Tglouton, "glouton")
-# tracer_constantes(exSizes, TprogDyn, "programmation dynamique")
-# tracer_constantes(exSizes, TlocalSearch, "recherche locale")
+tracer_constantes(exSizes, Tglouton, "glouton")
+tracer_constantes(exSizes, TprogDyn, "programmation dynamique")
+tracer_constantes(exSizes, TlocalSearch, "recherche locale")
