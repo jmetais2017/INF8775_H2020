@@ -2,7 +2,7 @@
 import numpy as np
 
 class Population:
-    # Contructeur pour le graph
+    # Contructeur for the graph
     EXEMPLAIRE_FOLDER = 'exemplaires/'
 
     def __init__(self, exemplaire):
@@ -13,8 +13,9 @@ class Population:
         self.nb_infections = None
         self.relations = None
         self.level_graph = None
+        self.ContaminedBy = None
 
-    # Traite les donnes
+    # Process txt file data
     def load_exemplaire(self):
         self.size, self.nb_infections = np.loadtxt(Population.EXEMPLAIRE_FOLDER + self.exemplaire, delimiter=' ', max_rows=1, dtype=int, unpack=True)
         self.data = np.loadtxt(Population.EXEMPLAIRE_FOLDER + self.exemplaire, skiprows=1, max_rows=self.size, dtype=bool)
@@ -31,30 +32,37 @@ class Population:
             g[i] = relations
         self.relations = g
 
-    # Pour savoir selon la situation actuelle combien sont infecter
+    # This iterate on the population to know each round who his infected and by whom
     def propagateInfection(self, K):
-        infected = self.getInfectedPersons().copy()
+        infected = self.getInfectedPersons().copy().tolist()
         level = 0
-        level_graph = {level: infected.tolist()}
+        self.level_graph = {level: infected}
+        # self.graph_propagators = {-1: infected} # Si l'on veut ajouter root a deja contamine
+        self.ContaminedBy = {}
+
         while True:
             new_infected = []
-
+            # Iteration on all population
             for i in range(self.size):
-                nb_relation_with_infected = 0 # Initialise le nombre de relation avec infecter
-                # On commence par verifier si dans les infecter
+                who_infected_me = [] # To know how many infected an infected person has
+                nb_relation_with_infected = 0 # Initialize the number of relation
+
+                # Verifies if already infected
                 if i not in infected:
                     for y in infected:
                         if self.data[i][y]:
+                            who_infected_me.append(y)
                             nb_relation_with_infected += 1
                     if nb_relation_with_infected >= K:
                         new_infected.append(i)
-            # add new infected to list or get out
+                        self.ContaminedBy.update({i: who_infected_me})
+
+            # Add new infected to list or get out
             if len(new_infected) == 0:
-                self.level_graph = level_graph
                 return len(infected)
             else:
                 level += 1
-                level_graph.update({level: new_infected})
+                self.level_graph.update({level: new_infected})
                 infected = np.append(infected, np.array(new_infected))
 
     # Getters
@@ -72,3 +80,6 @@ class Population:
 
     def getLevelGraph(self):
         return self.level_graph
+
+    def getContaminedBy(self):
+        return self.ContaminedBy

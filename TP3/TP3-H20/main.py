@@ -48,15 +48,15 @@ if nb_contamine / population.getSize() < 0.5:
 population.buildRelation()
 
 # The BranchAndBound class his responsible to find the optimal solution
-algo = Algo(population.getLevelGraph())
+algo = Algo(population.getLevelGraph(), population.getContaminedBy())
 
 # Build the tree that defines the propagation path
-algo.propagationTree(population.getRelations(), population.getSize(), K)
+algo.propagationTree(population.getRelations())
 
 # After we grade the virus propagators
-algo.gradePropagators(population.getRelations(), population.getSize(), K)
+# algo.gradePropagators(K)
 
 # Then we cut links
-linkToBreak = algo.branchAndBound(population.getRelations(), K)
+linkToBreak = algo.branchAndBound(population.size, K)
 
 print(nb_contamine)
