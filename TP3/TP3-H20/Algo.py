@@ -92,7 +92,6 @@ class Algo:
             node = queue.pop()
             k = len(node.id)
             key = keys[k]
-            print(key)
             # If Node produces a solution store it and continue
 
             # Need to compute gain from removing node
@@ -114,7 +113,8 @@ class Algo:
 
                     # if contamined by lower then K
                     if contaminedBy < K:
-                        impacts.extend(self.propagatesTo[impact])
+                        if impact in self.propagatesTo:
+                            impacts.extend(self.propagatesTo[impact])
                         total_impacts.append(impact)
 
             score = len(total_impacts)
@@ -124,6 +124,7 @@ class Algo:
             if node.value - score < condition_success and node.cost + cost < bound:
                 solution.append(Node(node.id + '1', total_impacts, node.value - score, node.cost + cost))
                 bound = node.cost + cost
+                print(bound)
                 continue
 
             # Else branch on Node to produce other Nodes 0 do nothing, 1 remove node
