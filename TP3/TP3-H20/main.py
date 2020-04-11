@@ -54,7 +54,7 @@ algo = Algo(population.getLevelGraph(), population.getContaminedBy())
 algo.propagationTree(population.getRelations())
 
 # After we grade the virus propagators
-# algo.gradePropagators(K)
+algo.gradePropagators(K)
 
 # Then we cut links
 linkToBreak = algo.branchAndBound(population.size, K)

@@ -43,29 +43,48 @@ class Algo:
             for person in self.level_graph[level]:
                 # Compute cost to break link
                 cost = (len(self.contaminedBy[person])-K)+1
-                self.cost.update({person: cost})
-
+                # self.cost.update({person: cost})
 
                 # determine for each nodes in layer were virus spread how they them self impact others
-                gain = 1 # himself
-                if person in self.propagatesTo:
-                    gain += len(self.propagatesTo[person])
-                    self.potential_gain.update({person: gain})
-
+                # gain = 1 # himself
                 # if person in self.propagatesTo:
-                #     direct_impacts = self.propagatesTo[person]
-                #
-                #     total_impact = [] # To store impacts
-                #     while len(direct_impacts) > 0:
-                #         impact = direct_impacts.pop()
-                #         total_impact.append(impact)
-                #         direct_impacts.append(impact)
-                #         print('t')
+                #     gain += len(self.propagatesTo[person])
+                    # self.potential_gain.update({person: gain})
+
+                # TODO: Calculate gain like branch and bound to all descendents
+                total_impacts = [person]
+                if person in self.propagatesTo:
+                    impacts = self.propagatesTo[person]
+
+                    # for each of them we check if removing connection removes it if it does we check continue going down
+                    for impact in impacts:
+                        # -1 for node we are removing
+                        contaminedBy = len(self.contaminedBy[impact]) - 1
+
+                        # if contamined by lower then K
+                        if contaminedBy < K:
+                            if impact in self.propagatesTo:
+                                impacts.extend(self.propagatesTo[impact])
+                            total_impacts.append(impact)
+
+                gain = len(total_impacts)
 
                 # Compute Gain
                 ratio = gain/cost
-                self.ratio.update({person: ratio})
+                if ratio in self.ratio:
+                    self.ratio[ratio].append(person)
+                    continue
 
+                self.ratio.update({ratio: [person]})
+
+    '''
+    This is used to order the search in terms of greedy algorithm
+    '''
+    def defineNodeOrder(self):
+        node_order = []
+        for key in sorted(self.ratio.keys(), reverse=True):
+            node_order.extend(self.ratio[key])
+        return node_order
 
     '''
     The principal behind this algo his to limit the source
@@ -80,8 +99,9 @@ class Algo:
         # To remove if len(queue)>0: return queue.pop() O(1)
         queue = [Node('', [], len(self.contaminedBy), 0)]
         solution = []
-        bound = size  # Initial bound
-        keys = list(self.contaminedBy.keys())
+        bound = size*K  # Initial bound
+        keys = self.defineNodeOrder()
+        # keys = list(self.contaminedBy.keys())
         size_keys = len(keys)
         # Utilisation de ceil pour nombre impair size car condition < (-1)
         # Exemple floor(448,5) < 897/2 < ceil(448,5) -> 448-1 < 448,5 < 449-1 -> 447*2=894 < 897 < 448*2=896
@@ -142,6 +162,9 @@ class Algo:
 
             # if bound cost , note : python finishes execution if first condition fails
                 if new_node.cost < bound:
-                    queue.append(new_node)
-                    # queue.insert(0, new_node)
+                    if len(solution) == 1:
+                        queue.insert(0, new_node) # Queue
+                        continue
+                    queue.append(new_node)  # Stack
+
         print('test')
