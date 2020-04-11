@@ -1,5 +1,6 @@
 # coding=utf8
 import math
+import sys
 from utils import Node
 
 class Algo:
@@ -99,7 +100,7 @@ class Algo:
         # To remove if len(queue)>0: return queue.pop() O(1)
         queue = [Node('', [], len(self.contaminedBy), 0)]
         solution = []
-        bound = size*K  # Initial bound
+        bound = sys.maxsize  # Initial bound
         keys = self.defineNodeOrder()
         # keys = list(self.contaminedBy.keys())
         size_keys = len(keys)
@@ -162,9 +163,9 @@ class Algo:
 
             # if bound cost , note : python finishes execution if first condition fails
                 if new_node.cost < bound:
-                    if len(solution) == 1:
-                        queue.insert(0, new_node) # Queue
-                        continue
+                    # if len(solution) == 1:
+                    #     queue.insert(0, new_node) # Queue
+                    #     continue
                     queue.append(new_node)  # Stack
 
         print('test')

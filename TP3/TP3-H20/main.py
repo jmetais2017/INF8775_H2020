@@ -4,7 +4,7 @@ from Population import Population
 from Algo import Algo
 
 K = 3 # Entre 2 et 5
-EXEMPLAIRE = '500_5000_25_0.txt'
+EXEMPLAIRE = '100_4950_25_0.txt'
 
 # Generer des exemplaire
 def generateEchantillon(relation, proportion):
@@ -39,6 +39,8 @@ population.load_exemplaire()
 
 # Get the current level of contagion
 nb_contamine = population.propagateInfection(K)
+
+print("niveau de contamination: %.2f" %int(nb_contamine/population.size))
 
 # Do we need to act
 if nb_contamine / population.getSize() < 0.5:
