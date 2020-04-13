@@ -4,7 +4,8 @@ from Population import Population
 from Algo import Algo
 
 K = 3 # Entre 2 et 5
-EXEMPLAIRE = '100_4950_25_0.txt'
+EXEMPLAIRE = '500_5000_25_0.txt'
+print_relation = False
 
 # Generer des exemplaire
 def generateEchantillon(relation, proportion):
@@ -40,7 +41,7 @@ population.load_exemplaire()
 # Get the current level of contagion
 nb_contamine = population.propagateInfection(K)
 
-print("niveau de contamination: %.2f" %int(nb_contamine/population.size))
+print("Niveau de contamination si rien est fait (en pourcentage): %.2f " % (int(nb_contamine/population.size)*100))
 
 # Do we need to act
 if nb_contamine / population.getSize() < 0.5:
@@ -59,6 +60,6 @@ algo.propagationTree(population.getRelations())
 algo.gradePropagators(K)
 
 # Then we cut links
-linkToBreak = algo.branchAndBound(population.size, K)
+linkToBreak = algo.branchAndBound(population.size, K, print_relation)
 
 print(nb_contamine)
