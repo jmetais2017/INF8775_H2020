@@ -1,11 +1,23 @@
 import os
 import sys
+import argparse
 from Population import Population
 from Algo import Algo
 
-K = 3 # Entre 2 et 5
-EXEMPLAIRE = '500_5000_25_0.txt'
-print_relation = False
+parser = argparse.ArgumentParser()
+parser.add_argument("-e", "--E", help="chemin_vers_exemplaire")
+parser.add_argument("-k", "--relations", type=int, help="taux_de_propagation")
+parser.add_argument("-p", "--print", type=bool, help="Affiche les liens", required=False, default=False)
+args = parser.parse_args()
+
+EXEMPLAIRE = args.E[1:-1]
+K = args.relations
+print_relation = args.print
+
+
+# K = 3 # Entre 2 et 5
+# EXEMPLAIRE = '500_5000_25_0.txt'
+# print_relation = False
 
 # Generer des exemplaire
 def generateEchantillon(relation, proportion):
