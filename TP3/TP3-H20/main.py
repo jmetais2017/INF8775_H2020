@@ -1,4 +1,3 @@
-import os
 import sys
 import argparse
 from Population import Population
@@ -10,39 +9,17 @@ parser.add_argument("-k", "--relations", type=int, help="taux_de_propagation")
 parser.add_argument("-p", "--print", type=bool, help="Affiche les liens", required=False, default=False)
 args = parser.parse_args()
 
-EXEMPLAIRE = args.E[1:-1]
-K = args.relations
-print_relation = args.print
+# EXEMPLAIRE = args.E
+# EXEMPLAIRE = args.E[1:-1]  # On windows
+# K = args.relations
+# print_relation = args.print
 
 
-# K = 3 # Entre 2 et 5
-# EXEMPLAIRE = '500_5000_25_0.txt'
-# print_relation = False
-
-# Generer des exemplaire
-def generateEchantillon(relation, proportion):
-    N = [100, 500, 1000]
-    for n in N:
-        if relation == 'min':
-            r = 10*n
-
-        if relation == 'max':
-            r = (n*(n-1)) / 2
-
-        if proportion == 'min':
-            p = 5
-
-        if proportion == 'max':
-            p = 25
-
-        parameters = '-N ' + str(n) + ' -r ' + str(int(r)) + ' -p ' + str(p)
-        os.system('C:/anaconda/python generator.py ' + parameters)
-
-
-# generateEchantillon('min', 'min')
-# generateEchantillon('min', 'max')
-# generateEchantillon('max', 'min')
-# generateEchantillon('max', 'max')
+K = 3 # Entre 2 et 5
+#EXEMPLAIRE = '10_45_25_0.txt'
+EXEMPLAIRE = '1000_10000_25_0.txt'
+#EXEMPLAIRE = '500_5000_25_0.txt'
+print_relation = True
 
 # First define the population
 population = Population(EXEMPLAIRE)
@@ -69,9 +46,9 @@ algo = Algo(population.getLevelGraph(), population.getContaminedBy())
 algo.propagationTree(population.getRelations())
 
 # After we grade the virus propagators
-algo.gradePropagators(K)
+algo.gradePropagators(population.relations, K)
 
 # Then we cut links
-linkToBreak = algo.branchAndBound(population.size, K, print_relation)
+linkToBreak = algo.branchAndBound2(population.size, K, print_relation)
 
 print(nb_contamine)
