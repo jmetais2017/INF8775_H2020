@@ -44,26 +44,11 @@ class Algo:
             # For each level of propagation we get the total impact
             for person in self.level_graph[level]:
                 total_impacts = [person]
-                # if person in self.propagatesTo:
-                #     impacts = self.propagatesTo[person]
-                #
-                # for each of them we check if removing connection removes it if it does we check continue going down
-                #     for impact in impacts:
-                #         # -1 for node we are removing
-                #         contaminedBy = len(self.contaminedBy[impact]) - 1
-                #
-                #         # if contamined by lower then K
-                #         if contaminedBy < K:
-                #             if impact in self.propagatesTo:
-                #                 impacts.extend(self.propagatesTo[impact])
-                #             total_impacts.append(impact)
-                #
+                # The gain was calculate in another way but it wasnt working well for backpropagation
                 gain = len(total_impacts)
 
                 # Compute cost to break link and stay cured
                 cost = (len(self.contaminedBy[person])-K)+1
-
-                # self.cost.update({person: cost})
 
                 # Compute Gain
                 ratio = gain/cost
@@ -200,9 +185,9 @@ class Algo:
 
             # Second if bound cost lower then bound continue
                 if len(new_node.getLinks()) < bound:
-                    # if len(solution) == 1:
-                    #     queue.insert(0, new_node)  # Queue
-                    #     continue
+                    if len(solution) == 1:
+                        queue.insert(0, new_node)  # Queue
+                        continue
                     queue.append(new_node)  # Stack
 
     '''
@@ -214,13 +199,11 @@ class Algo:
         fo = open("results.txt", "a")
 
         if not_empty:
-            print('\n')
             fo.write('\n')
 
         for link in node.getLinks():
             line = str(link[0]) + " " + str(link[1])
-            print(line)
             fo.write(line + '\n')
 
-        # Close opend file
+        # Close opened file
         fo.close()

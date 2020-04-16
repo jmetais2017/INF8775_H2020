@@ -9,17 +9,20 @@ parser.add_argument("-k", "--relations", type=int, help="taux_de_propagation")
 parser.add_argument("-p", "--print", type=bool, help="Affiche les liens", required=False, default=False)
 args = parser.parse_args()
 
-# EXEMPLAIRE = args.E
+EXEMPLAIRE = args.E
 # EXEMPLAIRE = args.E[1:-1]  # On windows
-# K = args.relations
-# print_relation = args.print
+K = args.relations
+print_relation = args.print
 
 
-K = 3 # Entre 2 et 5
+# K = 3 # Entre 2 et 5
 #EXEMPLAIRE = '10_45_25_0.txt'
 # EXEMPLAIRE = '1000_10000_25_0.txt'
-EXEMPLAIRE = '500_5000_25_0.txt'
-print_relation = True
+# EXEMPLAIRE = '100_4950_25_0.txt'
+# print_relation = True
+
+# Clear result file between exemplaire runs
+open("results.txt", 'w').close()
 
 # First define the population
 population = Population(EXEMPLAIRE)
@@ -30,10 +33,10 @@ population.load_exemplaire()
 # Get the current level of contagion
 nb_contamine = population.propagateInfection(K)
 
-print("Niveau de contamination si rien est fait (en pourcentage): %.2f " % (int(nb_contamine/population.size)*100))
-
 # Do we need to act
 if nb_contamine / population.getSize() < 0.5:
+    print("Niveau de contamination si rien est fait (en pourcentage): %.2f " % (
+                int(nb_contamine / population.size) * 100))
     sys.exit()
 
 # Get the relations
