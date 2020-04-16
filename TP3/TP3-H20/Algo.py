@@ -185,9 +185,9 @@ class Algo:
 
             # Second if bound cost lower then bound continue
                 if len(new_node.getLinks()) < bound:
-                    if len(solution) == 1:
-                        queue.insert(0, new_node)  # Queue
-                        continue
+                    # if len(solution) == 1:
+                    #     queue.insert(0, new_node)  # Queue
+                    #     continue
                     queue.append(new_node)  # Stack
 
     '''
