@@ -5,7 +5,7 @@ from utils import Node
 
 class Algo:
     # Contructeur pour le graph
-    def __init__(self , level_graph, ContaminedBy):
+    def __init__(self, level_graph, ContaminedBy):
         self.level_graph = level_graph
         self.contaminedBy = ContaminedBy
         self.propagatesTo = {}
@@ -76,7 +76,7 @@ class Algo:
     
     ref : https://en.wikipedia.org/wiki/Branch_and_bound#Pseudocode
     '''
-    def branchAndBound(self, size, K, print_relation):
+    def branchAndBound(self, size, K, print_relation, nom_fichier_solution):
         # To add queue.insert(0,data) , Timecomplexity O(n), to remove if len(queue)>0: return queue.pop() O(1)
         queue = [Node('', [], [])]
         solution = []
@@ -87,11 +87,8 @@ class Algo:
         # Exemple floor(448,5) < 897/2 < ceil(448,5) -> 448-1 < 448,5 < 449-1 -> 447*2=894 < 897 < 448*2=896
         condition_success = math.ceil(size/2)
 
-        exec_counter = 0
         while len(queue) > 0:
-            exec_counter += 1
             node = queue.pop()
-
             k = len(node.id)
             key = keys[k]
 
@@ -165,7 +162,7 @@ class Algo:
                     bound = len(links_to_break)
                     if print_relation:
                         not_empty = True if len(solution) > 1 else False
-                        self.print_relation(solution[-1], not_empty)
+                        self.print_relation(solution[-1], not_empty, nom_fichier_solution)
                         continue
                     print(str(bound) + '\n')
                     continue
@@ -185,18 +182,15 @@ class Algo:
 
             # Second if bound cost lower then bound continue
                 if len(new_node.getLinks()) < bound:
-                    # if len(solution) == 1:
-                    #     queue.insert(0, new_node)  # Queue
-                    #     continue
                     queue.append(new_node)  # Stack
 
     '''
     This function print the links that needs to be broken instead of the number of relation to be broken
     '''
-    def print_relation(self, node, not_empty):
+    def print_relation(self, node, not_empty, nom_fichier_solution):
 
         # Open a file
-        fo = open("results.txt", "a")
+        fo = open(nom_fichier_solution, "a")
 
         if not_empty:
             fo.write('\n')
