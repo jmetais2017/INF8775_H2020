@@ -91,7 +91,7 @@ class Algo:
     
     ref : https://en.wikipedia.org/wiki/Branch_and_bound#Pseudocode
     '''
-    def branchAndBound2(self, size, K, print_relation):
+    def branchAndBound(self, size, K, print_relation):
         # To add queue.insert(0,data) , Timecomplexity O(n), to remove if len(queue)>0: return queue.pop() O(1)
         queue = [Node('', [], [])]
         solution = []
@@ -204,93 +204,6 @@ class Algo:
                     #     queue.insert(0, new_node)  # Queue
                     #     continue
                     queue.append(new_node)  # Stack
-
-
-
-    def branchAndBound(self, size, K, print_relation):
-        # To add queue.insert(0,data) , Timecomplexity O(n), to remove if len(queue)>0: return queue.pop() O(1)
-        queue = [Node('', [], size, 0)]
-        solution = []
-        bound = sys.maxsize  # Initial bound
-        keys = self.defineNodeOrder()
-        size_keys = len(keys)
-        # Utilisation de ceil pour nombre impair size car condition < (-1)
-        # Exemple floor(448,5) < 897/2 < ceil(448,5) -> 448-1 < 448,5 < 449-1 -> 447*2=894 < 897 < 448*2=896
-        condition_success = math.ceil(size/2)
-
-        exec_counter = 0
-        while len(queue) > 0:
-            exec_counter += 1
-            node = queue.pop()
-            k = len(node.id)
-            key = keys[k]
-
-            # His the node already gone
-            if key in node.getCured():
-                queue.append(Node(node.id + '0', node.cured, node.value, node.cost))
-                continue
-
-            # Need to compute gain from removing node
-            # Using PropagateTo we get direct impacts
-            total_impacts = [key]
-            if key in self.propagatesTo:
-                impacts = self.propagatesTo[key]
-
-                # for each of them we check if removing connection removes it if it does we check continue going down
-                for impact in impacts:
-                    # -1 for node we are removing
-                    contaminedBy_removed = 1
-                    for propagator in self.contaminedBy[impact]:
-                        if propagator in node.getCured():
-                            contaminedBy_removed += 1
-
-                    contaminedBy = len(self.contaminedBy[impact]) - contaminedBy_removed
-
-                    # if contamined by lower then K
-                    if contaminedBy < K:
-                        if impact in self.propagatesTo:
-                            impacts.extend(self.propagatesTo[impact])
-                        total_impacts.append(impact)
-
-            score = len(total_impacts)
-
-            # If nodes relations already removed then cost his reduced
-            cost = 0
-            for propagator2 in self.contaminedBy[key]:
-                if propagator2 in node.getCured():
-                    cost -= 1
-
-            cost += (len(self.contaminedBy[key])-K) + 1  # Cost to cure the person
-            temp_list = node.getCured()
-            total_impacts.extend(temp_list)
-            # If Node produces a solution store it and continue
-            if node.value - score < condition_success and node.cost + cost < bound:
-                solution.append(Node(node.id + '1', total_impacts, node.value - score, node.cost + cost))
-                bound = node.cost + cost
-                if print_relation:
-                    self.print_relation(keys, solution[-1], K)
-                    continue
-                print(str(bound) + '\n')
-                continue
-
-            # Else branch on Node to produce other Nodes 0 do nothing, 1 remove node
-            Next_Node0 = Node(node.id + '0', node.cured, node.value, node.cost)
-            Next_Node1 = Node(node.id + '1', total_impacts, node.value - score, node.cost + cost)
-
-            # Check if produced Nodes bound can obtain optimal, if they can obtain optimal add them to queue
-            # Two conditions to check:
-            # Node already removed or end of possibility? This needs to be check after first level of contamination, and bound cost
-            for new_node in [Next_Node0, Next_Node1]:
-                if k == size_keys - 1 or k < size_keys - 1 and node.cured.count(keys[k+1]) == 1:
-                    continue
-
-            # if bound cost , note : python finishes execution if first condition fails
-                if new_node.cost < bound:
-                    # if len(solution) == 1:
-                    #     queue.insert(0, new_node)  # Queue
-                    #     continue
-                    queue.append(new_node)  # Stack
-
 
     '''
     This function print the links that needs to be broken instead of the number of relation to be broken

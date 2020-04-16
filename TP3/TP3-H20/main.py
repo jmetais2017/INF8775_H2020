@@ -49,5 +49,5 @@ algo.propagationTree(population.getRelations())
 algo.gradePropagators(population.relations, K)
 
 # Then we cut links
-linkToBreak = algo.branchAndBound2(population.size, K, print_relation)
+linkToBreak = algo.branchAndBound(population.size, K, print_relation)
 
