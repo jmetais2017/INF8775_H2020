@@ -47,7 +47,7 @@ class Algo:
                 # if person in self.propagatesTo:
                 #     impacts = self.propagatesTo[person]
                 #
-                #     # for each of them we check if removing connection removes it if it does we check continue going down
+                # for each of them we check if removing connection removes it if it does we check continue going down
                 #     for impact in impacts:
                 #         # -1 for node we are removing
                 #         contaminedBy = len(self.contaminedBy[impact]) - 1
@@ -117,10 +117,11 @@ class Algo:
 
             # We determine how to cure the current person
             total_cured = [key]
-            if key in self.propagatesTo and key in self.contaminedBy:
-                peopleIShouldAvoid = self.propagatesTo[key] + self.contaminedBy[key]
+            if key in self.propagatesTo:
+                # peopleIShouldAvoid = self.propagatesTo[key] + self.contaminedBy[key]
+                peopleIShouldAvoid = self.contaminedBy[key] + self.propagatesTo[key]
             else:
-                peopleIShouldAvoid = self.contaminedBy[key]
+                peopleIShouldAvoid = self.contaminedBy[key].copy()
 
             # Remove already cured from the peopleToAvoid since they are not contagious
             temp_list =[]
@@ -140,10 +141,10 @@ class Algo:
                     continue
 
                 # Check if current node removes person, basically if key doesnt get virus this person won't also
-                if person in self.propagatesTo and person in self.contaminedBy:
+                if person in self.propagatesTo:
                     person_contagion = self.propagatesTo[person] + self.contaminedBy[person]
                 else:
-                    person_contagion = self.contaminedBy[person]
+                    person_contagion = self.contaminedBy[person].copy()
 
                 # Find already cured
                 person_contagion_cured = []

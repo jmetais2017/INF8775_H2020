@@ -17,8 +17,8 @@ args = parser.parse_args()
 
 K = 3 # Entre 2 et 5
 #EXEMPLAIRE = '10_45_25_0.txt'
-EXEMPLAIRE = '1000_10000_25_0.txt'
-#EXEMPLAIRE = '500_5000_25_0.txt'
+# EXEMPLAIRE = '1000_10000_25_0.txt'
+EXEMPLAIRE = '500_5000_25_0.txt'
 print_relation = True
 
 # First define the population
@@ -51,4 +51,3 @@ algo.gradePropagators(population.relations, K)
 # Then we cut links
 linkToBreak = algo.branchAndBound2(population.size, K, print_relation)
 
-print(nb_contamine)
